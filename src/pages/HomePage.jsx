@@ -10,16 +10,18 @@ export default function HomePage() {
 
 	return (
 		<main className="h-[92vh] max-w-[60rem] mx-auto relative">
-			<div className="flex items-center justify-between">
-				<h1 className="text-2xl text-gray-600 font-normal">User List</h1>
+			<div className="flex flex-col md:flex-row  md:items-center mt-4  md:justify-between">
+				<h1 className="text-2xl text-gray-600 font-normal text-center">
+					User List
+				</h1>
 				<button
 					onClick={() => navigate(`/add-user`)}
-					className="bg-blue-600 px-8 py-2 mt-4 mb-8 text-white rounded-lg cursor-pointer transition hover:bg-blue-600/90 hover:scale-110"
+					className=" bg-blue-600 px-8 py-2 mt-4 mb-8 text-white rounded-md cursor-pointer transition hover:bg-blue-600/90 hover:scale-110"
 				>
 					Add +
 				</button>
 			</div>
-			<div className="grid grid-cols-6 bg-gray-200 py-2 px-4 justify-items-center">
+			<div className="hidden md:grid grid-cols-6 bg-gray-200 py-2 px-4 justify-items-center">
 				<div className="col-span-1">Profile picture</div>
 				<div className="col-span-1">First name</div>
 				<div className="col-span-1">Last name</div>

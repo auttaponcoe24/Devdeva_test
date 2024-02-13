@@ -7,7 +7,7 @@ export default function Pagination({ data }) {
 	// console.log("first====", data);
 
 	const [itemOffset, setItemOffset] = useState(0);
-	const itemsPerPage = 3;
+	const itemsPerPage = 4;
 
 	const endOffset = itemOffset + itemsPerPage;
 	// console.log(`Loading items from ${itemOffset} to ${endOffset}`);
@@ -24,12 +24,15 @@ export default function Pagination({ data }) {
 	return (
 		<div className="">
 			{currentItems.map((user, index) => (
-				<div key={user.id} className="grid grid-cols-6 py-4 px-4">
+				<div
+					key={user.id}
+					className="grid grid-cols-1 md:grid-cols-6 py-4 px-4"
+				>
 					<UserList user={user} indexItem={index} />
 				</div>
 			))}
 
-			<div className="absolute bottom-0 right-0">
+			<div className="fixed bottom-0 right-0">
 				<ReactPaginate
 					breakLabel="..."
 					nextLabel=">"

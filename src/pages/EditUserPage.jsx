@@ -96,8 +96,8 @@ export default function EditUserPage() {
 	return (
 		<section className="h-[92vh] max-w-[60rem] mx-auto">
 			{loadImage && <Loading />}
-			<div className="flex items-center justify-between">
-				<h1 className="text-2xl text-gray-600 font-normal">
+			<div className="flex flex-col md:flex-row  md:items-center mt-4 md:justify-between">
+				<h1 className="text-2xl text-gray-600 font-normal text-center">
 					Edit User: {userCurrent.firstName}
 				</h1>
 				<button
@@ -112,8 +112,8 @@ export default function EditUserPage() {
 				onSubmit={handleSave}
 				className="flex flex-col items-center justify-around gap-4"
 			>
-				<div className="flex items-center justify-around gap-4">
-					<div className="flex flex-col items-center justify-center gap-4 my-4">
+				<div className="flex flex-col md:flex-row items-center justify-around gap-4">
+					<div className="flex flex-col items-center justify-center gap-4 md:my-4">
 						<input
 							type="file"
 							className="hidden"
@@ -131,7 +131,7 @@ export default function EditUserPage() {
 									// className="cursor-pointer w-[200px] h-[350px] border shadow-sd flex items-center justify-center p-4"
 									onClick={() => fileEl.current.click()}
 								>
-									<div className="w-40 h-40 rounded-full border border-gray-500 object-cover overflow-hidden">
+									<div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-gray-500 object-cover overflow-hidden">
 										<img
 											src={URL.createObjectURL(file)}
 											className="w-full h-full object-center"
@@ -161,7 +161,7 @@ export default function EditUserPage() {
 						) : (
 							<>
 								<div onClick={() => fileEl.current.click()}>
-									<div className="w-40 h-40 rounded-full border border-gray-500 object-cover overflow-hidden">
+									<div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-gray-500 object-cover overflow-hidden">
 										<img src={userCurrent.picture} alt="" />
 									</div>
 								</div>
@@ -176,8 +176,8 @@ export default function EditUserPage() {
 						)}
 					</div>
 
-					<div className="flex flex-col gap-4 w-[40rem] ml-10">
-						<div className="grid grid-cols-2 gap-4">
+					<div className="flex flex-col md:gap-4 md:w-[40rem] mx-10 md:ml-10">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
 							<div className="flex flex-col gap-2">
 								<label className="text-gray-400 font-semibold">
 									First Name
@@ -213,7 +213,7 @@ export default function EditUserPage() {
 								/>
 							</div>
 						</div>
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
 							<div className="flex flex-col gap-2">
 								<label className="text-gray-400 font-semibold">Gender</label>
 								<select
@@ -260,7 +260,7 @@ export default function EditUserPage() {
 					</div>
 				</div>
 
-				<div className="mt-20 mr-10 w-full text-end">
+				<div className="mt-10 md:mt-20 mr-10 w-full text-end">
 					<button
 						type="reset"
 						className="uppercase w-44 px-3 py-2 rounded-lg text-white bg-gray-600 transition hover:bg-gray-400 hover:scale-110 mr-4"
