@@ -4,31 +4,47 @@ import { mockUser } from "../lib/mockUser";
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-	const [user, setUser] = useState([] | null);
-	const [loadUser, setLoadUser] = useState(true);
+	const [user, setUser] = useState(mockUser);
 
-	const fetchUser = () => {
+	const deleteUser = (indexItem, userId) => {
 		try {
-			setUser(mockUser);
+			user.splice(indexItem, 1);
+			setUser((user) => user.filter((item) => item.id !== userId));
+			// console.log("indexItem :", indexItem);
+			// console.log("UserId :", userId);
 		} catch (err) {
 			console.log(err);
-			setLoadUser(false);
-		} finally {
-			setLoadUser(false);
 		}
 	};
 
-	const deleteUser = (userId) => {
+	const addUser = async (input) => {
 		try {
-			setUser(user.filter((item) => item.id !== userId));
-			console.log("delete UserId :", userId);
+			user.push(input);
+			// setUser([...user, user.push(input)]);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const editUser = async (userId, input) => {
+		try {
+			// const newUser = await user.filter((user) => user.id != userId);
+			const newUser = user.reduce((acc, user) => {
+				if (user.id != userId) acc.push(user);
+				else acc.push({ ...user, ...input });
+				return acc;
+			}, []);
+			setUser(newUser);
+			console.log("newUser", newUser);
+			console.log("userId =>", userId);
+			console.log("input =>", input);
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, fetchUser, loadUser, deleteUser }}>
+		<AuthContext.Provider value={{ user, deleteUser, addUser, editUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

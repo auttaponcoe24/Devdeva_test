@@ -2,17 +2,14 @@ import React, { useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import UserList from "../components/UserList";
+import Pagination from "../components/Pagination";
 
 export default function HomePage() {
-	const { user, fetchUser, loadUser } = useAuthContext();
+	const { user } = useAuthContext();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		fetchUser();
-	}, []);
-
 	return (
-		<main className="h-[92vh] max-w-[60rem] mx-auto">
+		<main className="h-[92vh] max-w-[60rem] mx-auto relative">
 			<div className="flex items-center justify-between">
 				<h1 className="text-2xl text-gray-600 font-normal">User List</h1>
 				<button
@@ -30,17 +27,15 @@ export default function HomePage() {
 				<div className="col-span-1">Birthday</div>
 				<div className="col-span-1">Action</div>
 			</div>
-			{loadUser ? (
-				<div>loading ... </div>
-			) : (
-				<div className="mt-4">
-					{user.map((user, index) => (
-						<div key={index} className="grid grid-cols-6 py-4 px-4">
-							<UserList user={user} />
-						</div>
-					))}
-				</div>
-			)}
+
+			{/* <div className="mt-4"> */}
+			{/* {user.map((user, index) => (
+					<div key={user.id} className="grid grid-cols-6 py-4 px-4">
+						<UserList user={user} indexItem={index} />
+					</div>
+				))} */}
+			<Pagination data={user} />
+			{/* </div> */}
 		</main>
 	);
 }

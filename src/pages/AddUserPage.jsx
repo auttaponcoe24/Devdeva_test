@@ -1,14 +1,22 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import { nanoid } from "nanoid";
+import axios from "axios";
+import Loading from "../components/Loading";
 
 export default function AddUserPage() {
 	const navigate = useNavigate();
-	const { user } = useAuthContext();
-	console.log(" =>", user.length);
+	const { user, addUser } = useAuthContext();
+	// console.log("user=>", user);
+
+	const fileEl = useRef(null);
+	const [file, setFile] = useState(null);
+	// if (file) console.log("fileUrl=>", URL.createObjectURL(file));
+	const [loadImage, setLoadImage] = useState(false);
 
 	const [inputUser, setInputUser] = useState({
-		id: 1,
+		id: nanoid(),
 		picture: "",
 		firstName: "",
 		lastName: "",
@@ -16,13 +24,75 @@ export default function AddUserPage() {
 		birthDay: "",
 	});
 
-	const handleSave = (e) => {
-		e.preventDefault();
-		alert(JSON.stringify(inputUser));
+	const uploadImage = async () => {
+		try {
+			setLoadImage(true);
+			const formData = new FormData();
+			formData.append("file", file);
+			formData.append("upload_preset", "efbwqtwg");
+			const res = await axios.post(
+				"https://api.cloudinary.com/v1_1/dnwtwyaim/image/upload",
+				formData
+			);
+			// console.log("first", res);
+			// console.log("+++", formData);
+			// console.log("---", file);
+
+			setInputUser({ ...inputUser, picture: res.data.url });
+		} catch (err) {
+			console.log(err);
+		} finally {
+			setLoadImage(false);
+		}
+	};
+
+	const handleSave = async (e) => {
+		let text = "Save Confirm";
+
+		if (confirm(text) === true) {
+			try {
+				e.preventDefault();
+				// alert(JSON.stringify(inputUser));
+				if (inputUser.firstName === "" || inputUser.lastName === "") {
+					alert("First Name Or Last Name is Empty");
+					return navigate(`/`);
+				} else {
+					// await uploadImage();
+					// await new Promise((resolve) => setTimeout(resolve, 5000));
+					// await addUser(inputUser);
+
+					if (file) {
+						setLoadImage(true);
+						const formData = new FormData();
+						formData.append("file", file);
+						formData.append("upload_preset", "efbwqtwg");
+						const res = await axios.post(
+							"https://api.cloudinary.com/v1_1/dnwtwyaim/image/upload",
+							formData
+						);
+						if (res.data.url) {
+							inputUser.picture = res.data.url;
+						}
+						await addUser(inputUser);
+					} else if (!file) {
+						await addUser(inputUser);
+					}
+					// alert(JSON.stringify(inputUser));
+				}
+			} catch (err) {
+				console.log(err);
+			} finally {
+				setLoadImage(false);
+				navigate(`/`);
+			}
+		} else {
+			navigate(`/`);
+		}
 	};
 
 	return (
 		<section className="h-[92vh] max-w-[60rem] mx-auto">
+			{loadImage && <Loading />}
 			<div className="flex items-center justify-between">
 				<h1 className="text-2xl text-gray-600 font-normal">Create new User</h1>
 				<button
@@ -33,16 +103,70 @@ export default function AddUserPage() {
 				</button>
 			</div>
 
-			<form className="flex flex-col items-center justify-around gap-4">
+			<form
+				onSubmit={handleSave}
+				className="flex flex-col items-center justify-around gap-4"
+			>
 				<div className="flex items-center justify-around gap-4">
 					<div className="flex flex-col items-center justify-center gap-4 my-4">
-						<div className="w-40 h-40 rounded-full border border-gray-500"></div>
-						<button className="bg-blue-600 px-4 py-2 text-white cursor-pointer rounded-lg transition hover:bg-blue-600/90 hover:scale-110">
-							Upload Profile Picture
-						</button>
-						<button className="bg-red-600 px-4 py-2 text-white cursor-pointer rounded-lg transition hover:bg-red-600/90 hover:scale-110">
-							Delet Picture
-						</button>
+						<input
+							type="file"
+							className="hidden"
+							ref={fileEl}
+							onChange={(e) => {
+								if (e.target.files[0]) {
+									setFile(e.target.files[0]);
+								}
+							}}
+						/>
+
+						{file ? (
+							<>
+								<div
+									// className="cursor-pointer w-[200px] h-[350px] border shadow-sd flex items-center justify-center p-4"
+									onClick={() => fileEl.current.click()}
+								>
+									<div className="w-40 h-40 rounded-full border border-gray-500 object-cover overflow-hidden">
+										<img
+											src={URL.createObjectURL(file)}
+											className="w-full h-full object-center"
+											alt=""
+										/>
+									</div>
+								</div>
+								<button
+									// onClick={() => fileEl.current.click()}
+									onClick={uploadImage}
+									type="button"
+									className="bg-blue-600 px-4 py-2 text-white cursor-pointer rounded-lg transition hover:bg-blue-600/90 hover:scale-110"
+								>
+									Upload Profile Picture
+								</button>
+								<button
+									type="button"
+									onClick={() => {
+										fileEl.current.value = "";
+										setFile(null);
+									}}
+									className="bg-red-600 px-4 py-2 text-white cursor-pointer rounded-lg transition hover:bg-red-600/90 hover:scale-110"
+								>
+									Delete Picture
+								</button>
+							</>
+						) : (
+							<>
+								<div onClick={() => fileEl.current.click()}>
+									<div className="w-40 h-40 rounded-full border border-gray-500 object-cover overflow-hidden"></div>
+								</div>
+								<button
+									onClick={() => fileEl.current.click()}
+									type="button"
+									className="bg-blue-600 px-4 py-2 text-white cursor-pointer rounded-lg transition hover:bg-blue-600/90 hover:scale-110"
+								>
+									Choose Profile Picture
+								</button>
+							</>
+						)}
 					</div>
 
 					<div className="flex flex-col gap-4 w-[40rem] ml-10">
@@ -94,12 +218,19 @@ export default function AddUserPage() {
 											[e.target.name]: e.target.value,
 										})
 									}
-									className="border border-gray-700 px-3 py-2 rounded-lg outline-none text-gray-400"
+									className="border border-gray-700 px-3 py-2 rounded-lg outline-none "
 								>
-									<option value="">-- Please select Gender --</option>
+									<option
+										value=""
+										label="-- Please select Gender --"
+										className="text-gray-400"
+										disabled
+									>
+										-- Please select Gender --
+									</option>
 
-									<option value="male">male</option>
-									<option value="female">female</option>
+									<option value="Male">MALE</option>
+									<option value="Female">FEMALE</option>
 								</select>
 							</div>
 							<div className="flex flex-col gap-2">
@@ -115,7 +246,7 @@ export default function AddUserPage() {
 											[e.target.name]: e.target.value,
 										})
 									}
-									className="border border-gray-700 px-3 py-2 rounded-lg outline-none text-gray-400"
+									className="border border-gray-700 px-3 py-2 rounded-lg outline-none text-gray-900"
 								/>
 							</div>
 						</div>
@@ -131,7 +262,6 @@ export default function AddUserPage() {
 					</button>
 					<button
 						type="submit"
-						onClick={handleSave}
 						className="uppercase w-44 px-3 py-2 rounded-lg text-white bg-green-600 transition hover:bg-green-400 hover:scale-110"
 					>
 						save
