@@ -35,9 +35,9 @@ export default function AuthContextProvider({ children }) {
 				return acc;
 			}, []);
 			setUser(newUser);
-			console.log("newUser", newUser);
-			console.log("userId =>", userId);
-			console.log("input =>", input);
+			// console.log("newUser", newUser);
+			// console.log("userId =>", userId);
+			// console.log("input =>", input);
 		} catch (err) {
 			console.log(err);
 		}

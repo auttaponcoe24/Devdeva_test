@@ -32,7 +32,7 @@ export default function Pagination({ data }) {
 				</div>
 			))}
 
-			<div className="fixed bottom-0 right-0">
+			<div className="fixed bottom-0 translate-y-10 -translate-x-10 right-0">
 				<ReactPaginate
 					breakLabel="..."
 					nextLabel=">"
